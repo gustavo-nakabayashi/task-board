@@ -85,7 +85,8 @@ func main() {
 				w.WriteHeader(http.StatusInternalServerError)
 				fmt.Fprintf(w, "Error creating board: %s", err)
 			}
-			fmt.Fprintf(w, "%s", board)
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(board)
 		}
 	})
 
