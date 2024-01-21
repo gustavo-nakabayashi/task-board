@@ -44,3 +44,20 @@ func (q *Queries) CreateBoard(ctx context.Context, arg CreateBoardParams) (Board
 	)
 	return i, err
 }
+
+const getBoard = `-- name: GetBoard :one
+SELECT id, created_at, updated_at, name, description FROM boards WHERE id = $1
+`
+
+func (q *Queries) GetBoard(ctx context.Context, id uuid.UUID) (Board, error) {
+	row := q.db.QueryRowContext(ctx, getBoard, id)
+	var i Board
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.Description,
+	)
+	return i, err
+}
