@@ -1,8 +1,9 @@
 package main
 
 import (
-	"context"
 	"database/sql"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -17,21 +18,31 @@ import (
 )
 
 type apiConfig struct {
-
 	DB *database.Queries
 }
 
-func handleCreateBoard(dbQueries *database.Queries, ctx context.Context) (database.Board, error) {
+func handleCreateBoard(dbQueries *database.Queries, r *http.Request) (database.Board, error) {
+	type parameters struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+	}
+
+	params := parameters{}
+
+	err := json.NewDecoder(r.Body).Decode(&params)
+	if err != nil {
+		return database.Board{}, errors.New("Error decoding request body")
+	}
+
 	board, err := dbQueries.CreateBoard(
-		ctx,
+		r.Context(),
 		database.CreateBoardParams{
 			ID:          uuid.New(),
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
-			Name:        "My first board",
-			Description: "This is my first board",
+			Name:        params.Name,
+			Description: params.Description,
 		})
-
 	if err != nil {
 		return database.Board{}, err
 	}
@@ -40,11 +51,7 @@ func handleCreateBoard(dbQueries *database.Queries, ctx context.Context) (databa
 }
 
 func main() {
-
-  godotenv.Load(".env")
-
-
-	ctx := context.Background()
+	godotenv.Load(".env")
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -73,7 +80,7 @@ func main() {
 		case http.MethodGet:
 			fmt.Fprintf(w, "GET Still under development")
 		case http.MethodPost:
-			board, err := handleCreateBoard(dbQueries, ctx)
+			board, err := handleCreateBoard(dbQueries, r)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				fmt.Fprintf(w, "Error creating board: %s", err)
@@ -84,5 +91,5 @@ func main() {
 
 	log.Fatal(http.ListenAndServe("localhost:"+port, nil))
 
-  fmt.Println("Server running on port", port)
+	fmt.Println("Server running on port", port)
 }
