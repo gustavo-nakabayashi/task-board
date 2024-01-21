@@ -2,82 +2,18 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"time"
 
-	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 
 	"github.com/gustavo-nakabayashi/golang-http/internal/database"
 )
 
-type apiConfig struct {
-	DB *database.Queries
-}
-
-func handleGetBoard(dbQueries *database.Queries, r *http.Request) (database.Board, error) {
-	type parameters struct {
-		Name        string `json:"name"`
-		Description string `json:"description"`
-	}
-
-	params := parameters{}
-
-	err := json.NewDecoder(r.Body).Decode(&params)
-	if err != nil {
-		return database.Board{}, errors.New("Error decoding request body")
-	}
-
-	board, err := dbQueries.CreateBoard(
-		r.Context(),
-		database.CreateBoardParams{
-			ID:          uuid.New(),
-			CreatedAt:   time.Now(),
-			UpdatedAt:   time.Now(),
-			Name:        params.Name,
-			Description: params.Description,
-		})
-	if err != nil {
-		return database.Board{}, err
-	}
-
-	return board, nil
-}
-
-func handleCreateBoard(dbQueries *database.Queries, r *http.Request) (database.Board, error) {
-	type parameters struct {
-		Name        string `json:"name"`
-		Description string `json:"description"`
-	}
-
-	params := parameters{}
-
-	err := json.NewDecoder(r.Body).Decode(&params)
-	if err != nil {
-		return database.Board{}, errors.New("Error decoding request body")
-	}
-
-	board, err := dbQueries.CreateBoard(
-		r.Context(),
-		database.CreateBoardParams{
-			ID:          uuid.New(),
-			CreatedAt:   time.Now(),
-			UpdatedAt:   time.Now(),
-			Name:        params.Name,
-			Description: params.Description,
-		})
-	if err != nil {
-		return database.Board{}, err
-	}
-
-	return board, nil
-}
+var DbQueries *database.Queries
 
 func main() {
 	godotenv.Load(".env")
@@ -98,53 +34,11 @@ func main() {
 	}
 	defer db.Close()
 
-	dbQueries := database.New(db)
+	DbQueries = database.New(db)
 
+	router := NewRouter()
 
-	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "pong")
-	})
-
-	http.HandleFunc("/boards/", func(w http.ResponseWriter, r *http.Request) {
-		id, err := uuid.Parse(r.URL.Path[len("/boards/"):])
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Header().Set("Content-Type", "application/json")
-			response := map[string]string{"error": "Invalid board ID"}
-			json.NewEncoder(w).Encode(response)
-			return
-		}
-
-		switch r.Method {
-		case http.MethodGet:
-			board, err := dbQueries.GetBoard(r.Context(), id)
-			if err != nil {
-				w.WriteHeader(http.StatusNotFound)
-        return
-			}
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(board)
-		default:
-			w.WriteHeader(http.StatusNotFound)
-		}
-	})
-
-	http.HandleFunc("/boards", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodPost:
-			board, err := handleCreateBoard(dbQueries, r)
-			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
-				fmt.Fprintf(w, "Error creating board: %s", err)
-			}
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(board)
-		default:
-			w.WriteHeader(http.StatusNotFound)
-		}
-	})
-
-	log.Fatal(http.ListenAndServe("localhost:"+port, nil))
+	log.Fatal(http.ListenAndServe("localhost:"+port, router))
 
 	fmt.Println("Server running on port", port)
 }
