@@ -18,11 +18,13 @@ type Board struct {
 	Description string
 }
 
-type Todo struct {
+type Task struct {
 	ID          uuid.UUID
-	BoardID     uuid.NullUUID
+	BoardID     uuid.UUID
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	Name        string
 	Description string
+	Icon        int32
+	Status      string
 }

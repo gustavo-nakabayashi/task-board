@@ -31,5 +31,13 @@ func NewRouter() http.Handler {
 		}
 	})
 
+  mux.HandleFunc("/tasks", func(w http.ResponseWriter, r *http.Request){
+    if r.Method != http.MethodPost {
+			w.WriteHeader(http.StatusNotFound)
+    }
+
+    HandleCreateTask(w, r)
+  })
+
 	return mux
 }

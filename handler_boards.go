@@ -111,6 +111,6 @@ func HandleCreateBoard(w http.ResponseWriter, r *http.Request) {
 func ReturnErrorWithMessage(w http.ResponseWriter, statusCode int, message string) {
 	w.WriteHeader(statusCode)
 	w.Header().Set("Content-Type", "application/json")
-	response := map[string]string{"error": "Invalid board ID"}
+	response := map[string]string{"error": message}
 	json.NewEncoder(w).Encode(response)
 }
