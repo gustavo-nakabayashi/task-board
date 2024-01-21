@@ -47,6 +47,37 @@ func HandleDeleteBoard(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+func HandleUpdateBoard(w http.ResponseWriter, r *http.Request) {
+	type parameters struct {
+		ID          uuid.UUID
+		Name        string `json:"name"`
+		Description string `json:"description"`
+	}
+
+	params := parameters{}
+
+	err := json.NewDecoder(r.Body).Decode(&params)
+	if err != nil {
+		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Error decoding request body")
+	}
+
+	id, err := uuid.Parse(r.URL.Path[len("/boards/"):])
+	if err != nil {
+		ReturnErrorWithMessage(w, http.StatusBadRequest, "Invalid ID")
+		return
+	}
+	params.ID = id
+
+	board, err := DbQueries.UpdateBoard(r.Context(), database.UpdateBoardParams(params))
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(board)
+}
+
 func HandleCreateBoard(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		Name        string `json:"name"`
