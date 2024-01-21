@@ -45,12 +45,47 @@ func (q *Queries) CreateBoard(ctx context.Context, arg CreateBoardParams) (Board
 	return i, err
 }
 
+const deleteBoard = `-- name: DeleteBoard :exec
+DELETE FROM boards WHERE id = $1
+`
+
+func (q *Queries) DeleteBoard(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteBoard, id)
+	return err
+}
+
 const getBoard = `-- name: GetBoard :one
 SELECT id, created_at, updated_at, name, description FROM boards WHERE id = $1
 `
 
 func (q *Queries) GetBoard(ctx context.Context, id uuid.UUID) (Board, error) {
 	row := q.db.QueryRowContext(ctx, getBoard, id)
+	var i Board
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.Description,
+	)
+	return i, err
+}
+
+const updateBoard = `-- name: UpdateBoard :one
+UPDATE boards 
+SET name = $2, description = $3
+WHERE id = $1
+RETURNING id, created_at, updated_at, name, description
+`
+
+type UpdateBoardParams struct {
+	ID          uuid.UUID
+	Name        string
+	Description string
+}
+
+func (q *Queries) UpdateBoard(ctx context.Context, arg UpdateBoardParams) (Board, error) {
+	row := q.db.QueryRowContext(ctx, updateBoard, arg.ID, arg.Name, arg.Description)
 	var i Board
 	err := row.Scan(
 		&i.ID,

@@ -13,6 +13,8 @@ func NewRouter() http.Handler {
 		switch r.Method {
 		case http.MethodGet:
 			HandleGetBoard(w, r)
+    case http.MethodDelete:
+      HandleDeleteBoard(w, r)
 		default:
 			w.WriteHeader(http.StatusNotFound)
 		}
