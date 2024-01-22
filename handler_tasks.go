@@ -39,6 +39,5 @@ func HandleCreateTask(w http.ResponseWriter, r *http.Request) {
 		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Internal error")
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(task)
 }

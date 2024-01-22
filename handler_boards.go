@@ -27,7 +27,6 @@ func HandleGetBoard(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(board)
 }
 
@@ -43,7 +42,6 @@ func HandleDeleteBoard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -74,7 +72,6 @@ func HandleUpdateBoard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(board)
 }
 
@@ -108,13 +105,11 @@ func HandleCreateBoard(w http.ResponseWriter, r *http.Request) {
 		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Error creating initial tasks")
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(board)
 }
 
 func ReturnErrorWithMessage(w http.ResponseWriter, statusCode int, message string) {
 	w.WriteHeader(statusCode)
-	w.Header().Set("Content-Type", "application/json")
 	response := map[string]string{"error": message}
 	json.NewEncoder(w).Encode(response)
 }
