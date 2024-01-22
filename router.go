@@ -2,42 +2,26 @@ package main
 
 import (
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
+
 func NewRouter() http.Handler {
-	mux := http.NewServeMux()
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
 
-	mux.HandleFunc("/ping", HandlePingPong)
+	r.Use(SetContentTypeJson)
 
-	mux.HandleFunc("/boards/", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
-			HandleGetBoard(w, r)
-    case http.MethodDelete:
-      HandleDeleteBoard(w, r)
-    case http.MethodPut:
-      HandleUpdateBoard(w, r)
-		default:
-			w.WriteHeader(http.StatusNotFound)
-		}
-	})
+	r.Get("/ping", HandlePingPong)
 
-	mux.HandleFunc("/boards", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodPost:
-			HandleCreateBoard(w, r)
-		default:
-			w.WriteHeader(http.StatusNotFound)
-		}
-	})
+	r.Delete("/boards/", HandleDeleteBoard)
+	r.Get("/boards/", HandleGetBoard)
+	r.Post("/boards", HandleCreateBoard)
+	r.Put("/boards/", HandleUpdateBoard)
 
-  mux.HandleFunc("/tasks", func(w http.ResponseWriter, r *http.Request){
-    if r.Method != http.MethodPost {
-			w.WriteHeader(http.StatusNotFound)
-    }
+	r.Post("/tasks", HandleCreateTask)
 
-    HandleCreateTask(w, r)
-  })
-
-	return mux
+	return r
 }
