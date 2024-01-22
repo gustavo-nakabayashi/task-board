@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -38,7 +37,7 @@ func main() {
 
 	router := NewRouter()
 
+	log.Println("Server running on port", port)
 	log.Fatal(http.ListenAndServe("localhost:"+port, router))
 
-	fmt.Println("Server running on port", port)
 }
