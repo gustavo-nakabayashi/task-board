@@ -18,6 +18,7 @@ func NewRouter() http.Handler {
 
 	r.Delete("/boards/", HandleDeleteBoard)
 	r.Get("/boards/", HandleGetBoard)
+	r.Get("/boards/{id}/tasks", HandleGetTasksFromBoard)
 	r.Post("/boards", HandleCreateBoard)
 	r.Put("/boards/", HandleUpdateBoard)
 

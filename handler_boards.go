@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 
 	"github.com/gustavo-nakabayashi/golang-http/internal/database"
@@ -108,6 +109,21 @@ func HandleCreateBoard(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(board)
 }
 
+func HandleGetTasksFromBoard(w http.ResponseWriter, r *http.Request) {
+	boardID, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		ReturnErrorWithMessage(w, http.StatusBadRequest, "Invalid ID")
+		return
+	}
+
+	tasks, err := DbQueries.GetTasksFromBoard(r.Context(), uuid.UUID(boardID))
+	if err != nil {
+		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Error getting tasks")
+	}
+
+	json.NewEncoder(w).Encode(tasks)
+}
+
 func ReturnErrorWithMessage(w http.ResponseWriter, statusCode int, message string) {
 	w.WriteHeader(statusCode)
 	response := map[string]string{"error": message}
@@ -134,7 +150,7 @@ func generateInitialTasks(boardID uuid.UUID) [4]database.CreateTaskParams {
 			BoardID:     boardID,
 			Name:        "Task in Progress",
 			Description: "",
-			Icon:        1,
+			Icon:        9200,
 			Status:      "progress",
 		},
 		{
@@ -144,7 +160,7 @@ func generateInitialTasks(boardID uuid.UUID) [4]database.CreateTaskParams {
 			BoardID:     boardID,
 			Name:        "Task Completed",
 			Description: "",
-			Icon:        1,
+			Icon:        127947,
 			Status:      "completed",
 		},
 		{
@@ -154,7 +170,7 @@ func generateInitialTasks(boardID uuid.UUID) [4]database.CreateTaskParams {
 			BoardID:     boardID,
 			Name:        "Task Won't Do",
 			Description: "",
-			Icon:        1,
+			Icon:        9749,
 			Status:      "wont_do",
 		},
 		{
@@ -164,7 +180,7 @@ func generateInitialTasks(boardID uuid.UUID) [4]database.CreateTaskParams {
 			BoardID:     boardID,
 			Name:        "Task To Do",
 			Description: "Work on a Challenge on devChallenes.io, learn TypeScript.",
-			Icon:        1,
+			Icon:        128218,
 			Status:      "",
 		},
 	}

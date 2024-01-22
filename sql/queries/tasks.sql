@@ -16,3 +16,7 @@ SELECT *
 FROM tasks
 WHERE id = $1;
 
+-- name: GetTasksFromBoard :many
+SELECT *
+FROM tasks
+WHERE board_id = $1;

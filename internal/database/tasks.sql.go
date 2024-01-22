@@ -85,6 +85,44 @@ func (q *Queries) GetTask(ctx context.Context, id uuid.UUID) (Task, error) {
 	return i, err
 }
 
+const getTasksFromBoard = `-- name: GetTasksFromBoard :many
+SELECT id, board_id, created_at, updated_at, name, description, icon, status
+FROM tasks
+WHERE board_id = $1
+`
+
+func (q *Queries) GetTasksFromBoard(ctx context.Context, boardID uuid.UUID) ([]Task, error) {
+	rows, err := q.db.QueryContext(ctx, getTasksFromBoard, boardID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Task
+	for rows.Next() {
+		var i Task
+		if err := rows.Scan(
+			&i.ID,
+			&i.BoardID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Name,
+			&i.Description,
+			&i.Icon,
+			&i.Status,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateTask = `-- name: UpdateTask :one
 UPDATE tasks
 SET name=$1, description=$2, icon=$3, status=$4
