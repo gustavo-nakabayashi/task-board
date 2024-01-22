@@ -104,6 +104,10 @@ func HandleCreateBoard(w http.ResponseWriter, r *http.Request) {
 		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Error creating board")
 	}
 
+	if err := CreateInitialTasks(r, board.ID); err != nil {
+		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Error creating initial tasks")
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(board)
 }
@@ -113,4 +117,60 @@ func ReturnErrorWithMessage(w http.ResponseWriter, statusCode int, message strin
 	w.Header().Set("Content-Type", "application/json")
 	response := map[string]string{"error": message}
 	json.NewEncoder(w).Encode(response)
+}
+
+func CreateInitialTasks(r *http.Request, boardID uuid.UUID) error {
+	for _, task := range generateInitialTasks(boardID) {
+		_, err := DbQueries.CreateTask(r.Context(), task)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func generateInitialTasks(boardID uuid.UUID) [4]database.CreateTaskParams {
+	return [4]database.CreateTaskParams{
+		{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			BoardID:     boardID,
+			Name:        "Task in Progress",
+			Description: "",
+			Icon:        1,
+			Status:      "progress",
+		},
+		{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			BoardID:     boardID,
+			Name:        "Task Completed",
+			Description: "",
+			Icon:        1,
+			Status:      "completed",
+		},
+		{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			BoardID:     boardID,
+			Name:        "Task Won't Do",
+			Description: "",
+			Icon:        1,
+			Status:      "wont_do",
+		},
+		{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			BoardID:     boardID,
+			Name:        "Task To Do",
+			Description: "Work on a Challenge on devChallenes.io, learn TypeScript.",
+			Icon:        1,
+			Status:      "",
+		},
+	}
 }
