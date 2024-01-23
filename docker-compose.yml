@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: ./api/
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    depends_on: 
+      - db
+      - migrations
+    environment:
+      PORT: 3000
+      DB_URL: postgres://postgres:password@db:5432/todo-app?sslmode=disable
+
+  migrations:
+    build:
+      context: ./api/sql/schema/
+      dockerfile: Dockerfile
+    depends_on: 
+      - db
+    environment:
+      DB_URL: postgres://postgres:password@db:5432/todo-app?sslmode=disable
+
+
+  db:
+    container_name: postgres
+    image: postgres
+    ports:
+      - '5433:5432'
+    volumes:
+      - data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=todo-app
+
+volumes:
+  data: {}
+

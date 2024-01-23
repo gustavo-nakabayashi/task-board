@@ -1,4 +1,4 @@
-module github.com/gustavo-nakabayashi/golang-http
+module github.com/gustavo-nakabayashi/task-board/api
 
 go 1.21
 

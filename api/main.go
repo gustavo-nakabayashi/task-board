@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 
-	"github.com/gustavo-nakabayashi/golang-http/internal/database"
+	"github.com/gustavo-nakabayashi/task-board/api/internal/database"
 )
 
 var DbQueries *database.Queries
@@ -38,6 +38,6 @@ func main() {
 	router := NewRouter()
 
 	log.Println("Server running on port", port)
-	log.Fatal(http.ListenAndServe("localhost:"+port, router))
+	log.Fatal(http.ListenAndServe("0.0.0.0:"+port, router))
 
 }

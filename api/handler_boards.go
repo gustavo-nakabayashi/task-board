@@ -9,7 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 
-	"github.com/gustavo-nakabayashi/golang-http/internal/database"
+	"github.com/gustavo-nakabayashi/task-board/api/internal/database"
 )
 
 func HandlePingPong(w http.ResponseWriter, r *http.Request) {
