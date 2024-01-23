@@ -1,6 +1,6 @@
 module github.com/gustavo-nakabayashi/golang-http
 
-go 1.21.4
+go 1.20.13
 
 require (
 	github.com/google/uuid v1.5.0
