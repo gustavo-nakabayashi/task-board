@@ -17,7 +17,7 @@ func HandlePingPong(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleGetBoard(w http.ResponseWriter, r *http.Request) {
-	id, err := uuid.Parse(r.URL.Path[len("/boards/"):])
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		ReturnErrorWithMessage(w, http.StatusBadRequest, "Invalid ID")
 		return
@@ -32,7 +32,7 @@ func HandleGetBoard(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleDeleteBoard(w http.ResponseWriter, r *http.Request) {
-	id, err := uuid.Parse(r.URL.Path[len("/boards/"):])
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		ReturnErrorWithMessage(w, http.StatusBadRequest, "Invalid ID")
 		return
@@ -60,7 +60,7 @@ func HandleUpdateBoard(w http.ResponseWriter, r *http.Request) {
 		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Error decoding request body")
 	}
 
-	id, err := uuid.Parse(r.URL.Path[len("/boards/"):])
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		ReturnErrorWithMessage(w, http.StatusBadRequest, "Invalid ID")
 		return
