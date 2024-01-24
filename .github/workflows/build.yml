@@ -28,5 +28,5 @@ jobs:
     needs: build
     steps:
     - uses: actions/checkout@v3
-    - run: docker-compose up
+    - run: docker-compose up -d
 
