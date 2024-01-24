@@ -1,8 +1,8 @@
 resource "digitalocean_droplet" "www-1" {
-    image = "ubuntu-20-04-x64"
+    image = "docker-20-04"
     name = "www-1"
     region = "sfo3"
-    size = "s-1vcpu-512mb-10gb"
+    size = "s-1vcpu-1gb"
     ssh_keys = [
       data.digitalocean_ssh_key.mac.id
     ]

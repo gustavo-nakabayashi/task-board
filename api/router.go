@@ -22,7 +22,10 @@ func NewRouter() http.Handler {
 	r.Post("/boards", HandleCreateBoard)
 	r.Put("/boards/{id}", HandleUpdateBoard)
 
+	r.Delete("/tasks/{id}", HandleDeleteTask)
+	r.Get("/tasks/{id}", HandleGetTask)
 	r.Post("/tasks", HandleCreateTask)
+	r.Put("/tasks/{id}", HandleUpdateTask)
 
 	return r
 }
