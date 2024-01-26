@@ -18,8 +18,6 @@ connection {
 provisioner "remote-exec" {
   inline = [
     "export PATH=$PATH:/usr/bin",
-    # install nginx
-    "sudo apt update",
   ]
 }
 }
