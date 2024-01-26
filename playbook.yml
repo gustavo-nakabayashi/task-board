@@ -7,10 +7,7 @@
     github_repo: task-board
     runner_user: ubuntu
 
-  roles:
-    - role: github_actions_runner
-
-  tasks:
+  pre_tasks:
     - name: Install aptitude
       apt:
         name: aptitude
@@ -65,4 +62,18 @@
       community.general.ufw:
         state: enabled
         default: deny
+
+    - name: Add user to docker group
+      ansible.builtin.user:
+        name: "{{ created_username }}"
+        groups: docker
+        append: true
+        tags: tag1
+
+    - name: Reset ssh connection to allow user changes to affect ansible user
+      ansible.builtin.meta:
+        reset_connection
+      tags: tag1
+  roles:
+    - role: github_actions_runner
 

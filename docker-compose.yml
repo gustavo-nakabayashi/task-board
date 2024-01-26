@@ -15,6 +15,7 @@ services:
       DB_URL: postgres://postgres:password@db:5432/todo-app?sslmode=disable
 
   migrations:
+    restart: on-failure
     build:
       context: ./api/sql/schema/
       dockerfile: Dockerfile
