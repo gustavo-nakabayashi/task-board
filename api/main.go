@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 
 	"github.com/gustavo-nakabayashi/task-board/api/internal/database"
@@ -15,9 +14,8 @@ import (
 var DbQueries *database.Queries
 
 func main() {
-	godotenv.Load(".env")
 
-	port := os.Getenv("PORT")
+	port := os.Getenv("BACKEND_PORT")
 	if port == "" {
 		log.Fatal("PORT is not set")
 	}

@@ -1,18 +1,30 @@
 version: '3.8'
 services:
-  app:
+  next-app:
+    container_name: next-app
+    build:
+      context: ./frontend
+      dockerfile: prod.Dockerfile
+      args:
+        ENV_VARIABLE: ${ENV_VARIABLE}
+        NEXT_PUBLIC_ENV_VARIABLE: ${NEXT_PUBLIC_ENV_VARIABLE}
+    restart: always
+    ports:
+      - 3000:3000
+
+  backend:
     build:
       context: ./api/
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3030:3030"
     restart: unless-stopped
     depends_on: 
       - db
       - migrations
-    environment:
-      PORT: 3000
-      DB_URL: postgres://postgres:password@db:5432/todo-app?sslmode=disable
+    env_file:
+      - .env
+
 
   migrations:
     restart: on-failure
@@ -21,8 +33,8 @@ services:
       dockerfile: Dockerfile
     depends_on: 
       - db
-    environment:
-      DB_URL: postgres://postgres:password@db:5432/todo-app?sslmode=disable
+    env_file:
+      - .env
 
 
   db:
@@ -32,9 +44,8 @@ services:
       - '5433:5432'
     volumes:
       - data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=todo-app
+    env_file:
+      - .env
 
 volumes:
   data: {}

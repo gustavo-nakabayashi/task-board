@@ -1,0 +1,68 @@
+version: '3.8'
+services:
+  next-app:
+    container_name: next-app
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    environment:
+      ENV_VARIABLE: ${ENV_VARIABLE}
+      NEXT_PUBLIC_ENV_VARIABLE: ${NEXT_PUBLIC_ENV_VARIABLE}
+    env_file:
+      - .env
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - my_network
+
+  backend:
+    container_name: backend
+    build:
+      context: ./api/
+      dockerfile: Dockerfile
+    ports:
+      - "3030:3030"
+    restart: unless-stopped
+    depends_on: 
+      - db
+      - migrations
+    env_file:
+      - .env
+    networks:
+      - my_network
+
+  migrations:
+    restart: on-failure
+    build:
+      context: ./api/sql/schema/
+      dockerfile: Dockerfile
+    depends_on: 
+      - db
+    env_file:
+      - .env
+    networks:
+      - my_network
+
+
+  db:
+    container_name: postgres
+    image: postgres
+    ports:
+      - '5433:5432'
+    volumes:
+      - data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    networks:
+      - my_network
+
+volumes:
+  data: {}
+
+networks:
+  my_network:
+    external: true
