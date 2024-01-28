@@ -1,2 +1,4 @@
 .env
 .terraform/providers/
+frontendd/.next
+api/api
