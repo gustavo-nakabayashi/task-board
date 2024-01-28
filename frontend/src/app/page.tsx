@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getBoardTasks } from "@/app/lib/data";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
+import Task from "@/app/ui/Task";
 
 import { headers } from "next/headers";
 
@@ -58,13 +59,46 @@ export default async function Page({
   }
 
   const tasksDivs = tasks.map((task: any) => {
-    return (
-      <div key={task.ID} className="text-black">
-        <div>{task.Name}</div>
-        <div>{task.ID}</div>
-      </div>
-    );
+    return <Task task={task} key={task.ID} />;
   });
 
-  return <>{tasksDivs}</>;
+  const AddTask = () => {
+    return (
+      <div className="mt-4 flex justify-between bg-[#F5E8D5] p-4 rounded-2xl">
+        <div className="flex items-center text-black gap-6 rounded-2xl">
+          <div className="bg-[#E9A23B] h-12 w-12 flex justify-center items-center rounded-xl">
+            <Image
+              src={"/add_task.svg"}
+              alt="plus icon"
+              width={24}
+              height={24}
+            ></Image>
+          </div>
+          <div>
+            <div className="text-xl font-semibold">Add new task</div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <main className="m-auto max-w-[640px] p-12">
+      <div className="flex gap-4 items-start mb-8">
+        <Image src="/Logo.svg" alt="board icon" width={48} height={48} />
+        <div className="space-y-4">
+          <div className="flex gap-3">
+            <h1 className="text-4xl">My task Board</h1>
+            <button type="button">
+              <Image src="/Edit.svg" alt="edit icon" width={24} height={24} />
+            </button>
+          </div>
+          <p className="font-light">Tasks to keep organized</p>
+        </div>
+      </div>
+
+      <div className="space-y-4">{tasksDivs}</div>
+      <AddTask />
+    </main>
+  );
 }

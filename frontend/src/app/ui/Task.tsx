@@ -1,3 +1,5 @@
+import TaskStatus from "./TaskStatus";
+
 type TaskType = {
   ID: number;
   Name: string;
@@ -14,21 +16,13 @@ const backgroundColors = {
   "": "bg-[#E3E8EF]",
 };
 
-const iconBackgroundColors = {
-  progress: "bg-[#E9A23B]",
-  wont_do: "bg-[#DD524C]",
-  completed: "bg-[#32D657]",
+const getBackgroundColor = (status: string) => {
+  return backgroundColors[status as keyof typeof backgroundColors];
 };
 
 const Task = ({ task }: { task: TaskType }) => {
-  const getBackgroundColor = (status: string) => {
-    return backgroundColors[status as keyof typeof backgroundColors];
-  };
+   const iconChar = String.fromCodePoint(task.Icon);
 
-  // Function to safely get the icon background color based on task status
-  const getIconBackgroundColor = (status: string) => {
-    return iconBackgroundColors[status as keyof typeof iconBackgroundColors];
-  };
   return (
     <div
       className={`flex justify-between ${getBackgroundColor(task.Status)} p-4 rounded-2xl`}
@@ -37,15 +31,13 @@ const Task = ({ task }: { task: TaskType }) => {
         key={task.ID}
         className="flex items-center text-black gap-6 rounded-2xl"
       >
-        <div className="bg-white h-10 w-10 flex justify-center items-center rounded-xl">{`${String.fromCharCode(task.Icon)}`}</div>
+        <div className="bg-white h-12 w-12 text-xl flex justify-center items-center rounded-xl">{iconChar}</div>
         <div>
-          <div>{task.Name}</div>
-          <div>{task.Description}</div>
+          <div className="text-xl font-semibold">{task.Name}</div>
+          <div className="text-base font-[300]">{task.Description}</div>
         </div>
       </div>
-      <span
-        className={`h-10 ${getIconBackgroundColor(task.Status)} w-10 flex justify-center items-center rounded-xl`}
-      ></span>
+      <TaskStatus status={task.Status} />
     </div>
   );
 };
