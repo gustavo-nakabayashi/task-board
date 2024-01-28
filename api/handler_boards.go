@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -87,6 +88,7 @@ func HandleCreateBoard(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&params)
 	if err != nil {
 		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Error decoding request body")
+    return
 	}
 
 	board, err := DbQueries.CreateBoard(
@@ -100,10 +102,14 @@ func HandleCreateBoard(w http.ResponseWriter, r *http.Request) {
 		})
 	if err != nil {
 		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Error creating board")
+    log.Fatal(err)
+    return
 	}
 
 	if err := CreateInitialTasks(r, board.ID); err != nil {
 		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Error creating initial tasks")
+    log.Fatal(err)
+    return
 	}
 
 	json.NewEncoder(w).Encode(board)
@@ -119,6 +125,7 @@ func HandleGetTasksFromBoard(w http.ResponseWriter, r *http.Request) {
 	tasks, err := DbQueries.GetTasksFromBoard(r.Context(), uuid.UUID(boardID))
 	if err != nil {
 		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Error getting tasks")
+    return
 	}
 
 	json.NewEncoder(w).Encode(tasks)
