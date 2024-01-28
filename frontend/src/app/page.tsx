@@ -6,6 +6,7 @@ import { NextRequest } from "next/server";
 import Task from "@/app/ui/Task";
 
 import { headers } from "next/headers";
+import { CreateNewTask } from "./action";
 
 export default async function Page({
   params,
@@ -64,21 +65,26 @@ export default async function Page({
 
   const AddTask = () => {
     return (
-      <div className="mt-4 flex justify-between bg-[#F5E8D5] p-4 rounded-2xl">
-        <div className="flex items-center text-black gap-6 rounded-2xl">
-          <div className="bg-[#E9A23B] h-12 w-12 flex justify-center items-center rounded-xl">
-            <Image
-              src={"/add_task.svg"}
-              alt="plus icon"
-              width={24}
-              height={24}
-            ></Image>
+      <form
+        className="mt-4 flex justify-between bg-[#F5E8D5] rounded-2xl"
+        action={CreateNewTask}
+      >
+        <button className="w-full p-4" type="submit">
+          <div className="flex items-center text-black gap-6 rounded-2xl">
+            <div className="bg-[#E9A23B] h-12 w-12 flex justify-center items-center rounded-xl">
+              <Image
+                src={"/add_task.svg"}
+                alt="plus icon"
+                width={24}
+                height={24}
+              ></Image>
+            </div>
+            <div>
+              <div className="text-xl font-semibold">Add new task</div>
+            </div>
           </div>
-          <div>
-            <div className="text-xl font-semibold">Add new task</div>
-          </div>
-        </div>
-      </div>
+        </button>
+      </form>
     );
   };
 

@@ -186,7 +186,7 @@ func generateInitialTasks(boardID uuid.UUID) [4]database.CreateTaskParams {
 			UpdatedAt:   time.Now(),
 			BoardID:     boardID,
 			Name:        "Task To Do",
-			Description: "Work on a Challenge on devChallenes.io, learn TypeScript.",
+			Description: "Work on a Challenge on devChallenges.io, learn TypeScript.",
 			Icon:        128218,
 			Status:      "",
 		},
