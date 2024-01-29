@@ -7,6 +7,41 @@ export async function getBoardTasks(boardId: string) {
 }
 
 // Async function to create a board
+export async function getBoard(boardId: string) {
+  const res = await fetch(`http://backend:3030/boards/${boardId}`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch board");
+  }
+  return res.json();
+}
+
+// Async function to create a board
+export async function updateBoard(boardId: string, board: { Name: string, Description: string }) {
+  try {
+    const res = await fetch(`http://backend:3030/boards/${boardId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: board.Name,
+        description: board.Description,
+      }),
+    });
+
+    return res.json();
+  } catch (error) {
+
+    // print status code
+    if (error instanceof Response) console.log(error.status);
+
+
+    console.log(error);
+    throw new Error("Failed to update Board");
+  }
+}
+
+// Async function to create a board
 export async function createBoard() {
   const res = await fetch("http://backend:3030/boards", {
     method: "POST",
@@ -14,7 +49,7 @@ export async function createBoard() {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      name: "updateeee",
+      name: "Meu board",
       description: "teste vai",
     }),
   });
