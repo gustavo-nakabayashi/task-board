@@ -2,3 +2,4 @@
 .terraform/providers/
 frontendd/.next
 api/api
+.DS_Store
