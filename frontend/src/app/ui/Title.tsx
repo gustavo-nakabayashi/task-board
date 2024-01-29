@@ -52,7 +52,7 @@ const BoardTitle = ({
     <div className="flex gap-3">
       <h1 className="text-4xl">{title}</h1>
       <button onClick={() => setEditTitle(true)} type="button">
-        <Image src="/Edit.svg" alt="edit icon" width={24} height={24} />
+        <Image src="/edit.svg" alt="edit icon" width={24} height={24} />
       </button>
     </div>
   );
