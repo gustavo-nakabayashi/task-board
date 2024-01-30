@@ -1,11 +1,11 @@
 import Image from "next/image";
 
-import { getBoardTasks, getBoard } from "@/app/lib/data";
-import Title from "@/app/ui/Title";
 import Task from "@/app/ui/Task";
-// import Dialog from "@/app/ui/Dialog";
+import TaskDialog from "@/app/ui/TaskDialog";
+import Title from "@/app/ui/Title";
 
 import { CreateNewTask } from "@/app/action";
+import { getBoardTasks, getBoard } from "@/app/lib/data";
 
 const AddTask = ({ boardId }: { boardId: string }) => {
   const create = CreateNewTask.bind(null, boardId);
@@ -34,9 +34,24 @@ const AddTask = ({ boardId }: { boardId: string }) => {
   );
 };
 
-export default async function Page({ params }: { params: { id: string } }) {
+type TaskType = {
+  ID: string;
+  Name: string;
+  Icon: number;
+  BoardID: string;
+  Status: string;
+  Description: string;
+};
+
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams: { task: string };
+}) {
   let boardId = params.id;
-  let tasks: any;
+  let tasks: TaskType[];
   let board: any;
   try {
     tasks = await getBoardTasks(boardId);
@@ -62,6 +77,17 @@ export default async function Page({ params }: { params: { id: string } }) {
     return <Task task={task} key={task.ID} />;
   });
 
+  const RenderTaskDialog = () => {
+    const taskId = searchParams.task;
+    const queryTask = tasks.find((task) => task.ID === taskId);
+
+    if (queryTask === undefined) {
+      return null;
+    }
+
+    return <TaskDialog task={queryTask as TaskType} />;
+  };
+
   return (
     <main className="m-auto max-w-[640px] p-12">
       <div className="flex gap-4 items-start mb-8">
@@ -74,6 +100,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
       <div className="space-y-4">{tasksDivs}</div>
       <AddTask boardId={boardId} />
+      <RenderTaskDialog />
     </main>
   );
 }

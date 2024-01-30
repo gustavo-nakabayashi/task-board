@@ -12,11 +12,6 @@ export default function Layout({
     <>
       {children}
       {modal}
-      <nav>
-        <Link href="/92026947-fa02-4f50-bf8c-93e25ad72dd0/tasks/bla">
-          Open modal
-        </Link>
-      </nav>
     </>
   );
 }

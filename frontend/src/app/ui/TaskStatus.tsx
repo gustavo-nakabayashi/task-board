@@ -19,7 +19,7 @@ const TaskStatus = ({ status }: { status: string }) => {
         src={"\\" + status + ".svg"}
         alt="done icon"
         width={18}
-        height={18}
+        height={24}
       ></Image>
     );
   };
