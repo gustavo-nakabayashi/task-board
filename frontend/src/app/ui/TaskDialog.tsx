@@ -1,19 +1,20 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 
 const icons = [128187, 128172, 9749, 127947, 128218, 9200];
 
 const iconsDivs = icons.map((icon) => {
   return (
-    <span className={clsx("p-2 border-black border")}>
+    <span key={icon} className={clsx("p-2 border-black border")}>
       <label htmlFor="teste">{String.fromCodePoint(icon)}</label>
       <input
         className="border border-black hidden"
         type="radio"
         name="teste"
-        value="oi"
+        defaultValue="oi"
       />
     </span>
   );
@@ -24,7 +25,9 @@ type DialogProps = {
   setOpen: () => void;
 };
 
-const Dialog = ({ open, setOpen }: DialogProps) => {
+const Dialog = () => {
+  const router = useRouter();
+
   return (
     <dialog
       className="p-4 bg-black bg-opacity-70 absolute h-screen w-screen top-0 right-0 "
@@ -34,8 +37,10 @@ const Dialog = ({ open, setOpen }: DialogProps) => {
         <div className="flex text-xl justify-between mb-6">
           Task details
           <button
-            onClick={setOpen}
             className="border border-gray-200 rounded-md cursor-pointer h-8 w-8 flex justify-center items-center"
+            onClick={() => {
+              router.back();
+            }}
           >
             <Image
               src="/close_ring.svg"
@@ -55,7 +60,7 @@ const Dialog = ({ open, setOpen }: DialogProps) => {
               className="border border-black px-4 py-1 rounded-md"
               type="text"
               name="Name"
-              value="Lorem ipsum"
+              defaultValue="Lorem ipsum"
             />
           </div>
           <div className="flex flex-col">
@@ -70,7 +75,7 @@ const Dialog = ({ open, setOpen }: DialogProps) => {
               className="border border-black px-4 py-1 rounded-md"
               type="text"
               name="Description"
-              value="Lorem impsum"
+              defaultValue="Lorem impsum"
               placeholder="Enter a short description"
             />
           </div>
@@ -84,7 +89,7 @@ const Dialog = ({ open, setOpen }: DialogProps) => {
             className="border border-black"
             type="text"
             name="Description"
-            value="Lorem impsum"
+            defaultValue="Lorem impsum"
           />
           <label htmlFor="Description">Description</label>
         </form>
