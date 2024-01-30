@@ -1,33 +1,27 @@
 "use server";
 
 import { createNewTask, updateBoard } from "@/app/lib/data";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
-import { cookies } from "next/headers";
-
-export const CreateNewTask = async () => {
+export const CreateNewTask = async (boardId: string) => {
   try {
-    const boardId = cookies().get("boardId")?.value;
-    if (!boardId) {
-      throw new Error("no boardId");
-    }
     await createNewTask(boardId);
-
-    revalidatePath("/");
+    revalidateTag("tasks");
   } catch (error) {
     console.log(error);
   }
 };
 
-export const UpdateBoard = async (board: { Name: string, Description: string }) => {
+export const UpdateBoard = async (board: {
+  Name: string;
+  Description: string;
+  boardId: string;
+}) => {
   try {
-    const boardId = cookies().get("boardId")?.value;
-    if (!boardId) {
-      throw new Error("no boardId");
-    }
-    await updateBoard(boardId, board);
+    await updateBoard(board);
 
-    revalidatePath("/");
+    // @TODO this revalidate is not working
+    revalidateTag("board");
   } catch (error) {
     console.log(error);
   }

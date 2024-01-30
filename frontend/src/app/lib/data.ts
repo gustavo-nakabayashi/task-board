@@ -1,5 +1,7 @@
 export async function getBoardTasks(boardId: string) {
-  const res = await fetch(`http://backend:3030/boards/${boardId}/tasks`);
+  const res = await fetch(`http://backend:3030/boards/${boardId}/tasks`, {
+    next: { tags: ["tasks"] },
+  });
   if (!res.ok) {
     throw new Error("Failed to fetch board tasks");
   }
@@ -8,7 +10,9 @@ export async function getBoardTasks(boardId: string) {
 
 // Async function to create a board
 export async function getBoard(boardId: string) {
-  const res = await fetch(`http://backend:3030/boards/${boardId}`);
+  const res = await fetch(`http://backend:3030/boards/${boardId}`, {
+    next: { tags: ["board"] },
+  });
   if (!res.ok) {
     throw new Error("Failed to fetch board");
   }
@@ -16,9 +20,13 @@ export async function getBoard(boardId: string) {
 }
 
 // Async function to create a board
-export async function updateBoard(boardId: string, board: { Name: string, Description: string }) {
+export async function updateBoard(board: {
+  Name: string;
+  Description: string;
+  boardId: string;
+}) {
   try {
-    const res = await fetch(`http://backend:3030/boards/${boardId}`, {
+    const res = await fetch(`http://backend:3030/boards/${board.boardId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -31,10 +39,8 @@ export async function updateBoard(boardId: string, board: { Name: string, Descri
 
     return res.json();
   } catch (error) {
-
     // print status code
     if (error instanceof Response) console.log(error.status);
-
 
     console.log(error);
     throw new Error("Failed to update Board");

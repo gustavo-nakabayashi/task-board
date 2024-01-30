@@ -11,6 +11,7 @@ const BoardTitle = ({
   board: {
     Name: string;
     Description: string;
+    boardId: string;
   };
 }) => {
   const [title, setTitle] = useState(board.Name);
@@ -25,7 +26,7 @@ const BoardTitle = ({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           onBlur={async () => {
-            await UpdateBoard({ Name: title, Description: board.Description });
+            await UpdateBoard({ ...board, Name: title });
             setEditTitle(false);
           }}
         />
