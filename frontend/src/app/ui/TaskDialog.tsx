@@ -51,9 +51,7 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
   const IconInput = () => {
     const iconsDivs = icons.map((icon) => {
       return (
-        <label
-          class="flex h-10 w-10 text-xl rounded-lg justify-center items-center bg-[#E3E8EF] has-[:checked]:bg-[#F5D565] cursor-pointer"
-        >
+        <label class="flex h-10 w-10 text-xl rounded-lg justify-center items-center bg-[#E3E8EF] has-[:checked]:bg-[#F5D565] cursor-pointer">
           {String.fromCodePoint(icon)}
           <input name="icon" type="radio" class="hidden" />
         </label>
@@ -71,12 +69,23 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
   };
 
   const StatusInput = () => {
+    const statuses = ["progress", "wont_do", "completed"];
     return (
       <div className="flex flex-col">
         <label className="text-xs mb-1 text-[#97A3B6]" htmlFor="Status">
           Status
         </label>
-        <input type="text" name="Status" defaultValue={task.Status} />
+
+        <div class="grid grid-cols-2">
+          {statuses.map((status) => {
+            return (
+              <label class="has-[:checked]:bg-indigo-50 has-[:checked]:text-indigo-900 has-[:checked]:ring-indigo-200 ..">
+                {status}
+                <input type="radio" name="status" class="checked:border-indigo-500"/>
+              </label>
+            );
+          })}
+        </div>
       </div>
     );
   };
