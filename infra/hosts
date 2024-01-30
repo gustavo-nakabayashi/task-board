@@ -1,0 +1,6 @@
+
+[servers]
+www-1 ansible_host=24.144.82.4
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
