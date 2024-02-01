@@ -12,12 +12,12 @@ const AddTask = ({ boardId }: { boardId: string }) => {
 
   return (
     <form
-      className="mt-4 flex justify-between bg-[#F5E8D5] rounded-2xl"
+      className="mt-4 flex justify-between rounded-2xl bg-[#F5E8D5]"
       action={create}
     >
       <button className="w-full p-4" type="submit">
-        <div className="flex items-center text-black gap-6 rounded-2xl">
-          <div className="bg-[#E9A23B] h-12 w-12 flex justify-center items-center rounded-xl">
+        <div className="flex items-center gap-6 rounded-2xl text-black">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#E9A23B]">
             <Image
               src={"/add_task.svg"}
               alt="plus icon"
@@ -90,7 +90,7 @@ export default async function Page({
 
   return (
     <main className="m-auto max-w-[640px] p-12">
-      <div className="flex gap-4 items-start mb-8">
+      <div className="mb-8 flex items-start gap-4">
         <Image src="/Logo.svg" alt="board icon" width={48} height={48} />
         <div className="space-y-4">
           <Title board={board}></Title>

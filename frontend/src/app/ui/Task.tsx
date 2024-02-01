@@ -27,13 +27,13 @@ const Task = ({ task }: { task: TaskProps }) => {
   return (
     <Link
       href={`/${task.BoardID}?task=${task.ID}`}
-      className={`flex justify-between ${getBackgroundColor(task.Status)} p-4 rounded-2xl`}
+      className={`flex justify-between ${getBackgroundColor(task.Status)} rounded-2xl p-4`}
     >
       <div
         key={task.ID}
-        className="flex items-center text-black gap-6 rounded-2xl"
+        className="flex items-center gap-6 rounded-2xl text-black"
       >
-        <div className="bg-white h-12 w-12 text-xl flex justify-center items-center rounded-xl">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-xl">
           {iconChar}
         </div>
         <div>

@@ -17,12 +17,12 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
   const DescriptionInput = () => {
     return (
       <div className="flex flex-col">
-        <label htmlFor="Description" className="text-xs mb-1 text-[#97A3B6]">
+        <label htmlFor="Description" className="mb-1 text-xs text-[#97A3B6]">
           Description
         </label>
 
         <input
-          className="border border-black px-4 py-1 rounded-md"
+          className="rounded-md border border-black px-4 py-1"
           type="text"
           name="Description"
           defaultValue={task.Description}
@@ -35,11 +35,11 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
   const NameInput = () => {
     return (
       <div className="flex flex-col">
-        <label className="text-xs mb-1 text-[#97A3B6]" htmlFor="Name">
+        <label className="mb-1 text-xs text-[#97A3B6]" htmlFor="Name">
           Task name
         </label>
         <input
-          className="border border-black px-4 py-1 rounded-md"
+          className="rounded-md border border-black px-4 py-1"
           type="text"
           name="Name"
           defaultValue={task.Name}
@@ -51,16 +51,15 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
   const IconInput = () => {
     const iconsDivs = icons.map((icon) => {
       return (
-        <label class="flex h-10 w-10 text-xl rounded-lg justify-center items-center bg-[#E3E8EF] has-[:checked]:bg-[#F5D565] cursor-pointer">
+        <label className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg bg-[#E3E8EF] text-xl has-[:checked]:bg-[#F5D565]">
           {String.fromCodePoint(icon)}
-          <input name="icon" type="radio" class="hidden" />
         </label>
       );
     });
 
     return (
       <div className="flex flex-col">
-        <label htmlFor="Icon" className="text-xs mb-1 text-[#97A3B6]">
+        <label htmlFor="Icon" className="mb-1 text-xs text-[#97A3B6]">
           Icon
         </label>
         <div className="flex gap-2">{iconsDivs}</div>
@@ -72,16 +71,20 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
     const statuses = ["progress", "wont_do", "completed"];
     return (
       <div className="flex flex-col">
-        <label className="text-xs mb-1 text-[#97A3B6]" htmlFor="Status">
+        <label className="mb-1 text-xs text-[#97A3B6]" htmlFor="Status">
           Status
         </label>
 
         <div class="grid grid-cols-2">
           {statuses.map((status) => {
             return (
-              <label class="has-[:checked]:bg-indigo-50 has-[:checked]:text-indigo-900 has-[:checked]:ring-indigo-200 ..">
+              <label class=".. has-[:checked]:bg-indigo-50 has-[:checked]:text-indigo-900 has-[:checked]:ring-indigo-200">
                 {status}
-                <input type="radio" name="status" class="checked:border-indigo-500"/>
+                <input
+                  type="radio"
+                  name="status"
+                  class="checked:border-indigo-500"
+                />
               </label>
             );
           })}
@@ -97,15 +100,15 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
 
   return (
     <dialog
-      className="p-4 bg-black bg-opacity-70 absolute h-screen w-screen top-0 right-0 "
+      className="absolute right-0 top-0 h-screen w-screen bg-black bg-opacity-70 p-4 "
       open
     >
-      <div className="p-4 rounded-xl bg-white shadow max-w-[500px]">
-        <div className="flex text-xl justify-between mb-6">
+      <div className="max-w-[500px] rounded-xl bg-white p-4 shadow">
+        <div className="mb-6 flex justify-between text-xl">
           Task details
           <Link
             href={"/"}
-            className="border border-gray-200 rounded-md cursor-pointer h-8 w-8 flex justify-center items-center"
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-gray-200"
           >
             <Image
               src="/close_ring.svg"

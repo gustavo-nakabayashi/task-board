@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
 
   const board = await createBoard();
 
-  return NextResponse.redirect(new URL(`/${board.ID}`, request.url))
+  return NextResponse.redirect(new URL(`/${board.ID}`, request.url));
 }
 
 export const config = {
