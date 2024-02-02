@@ -35,6 +35,9 @@ func main() {
 
 	router := NewRouter()
 
+
+
+
 	log.Println("Server running on port", port)
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+port, router))
 

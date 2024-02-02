@@ -1,5 +1,5 @@
 export async function getBoardTasks(boardId: string) {
-  const res = await fetch(`http://backend:3030/boards/${boardId}/tasks`, {
+  const res = await fetch(`http://backend:8000/api/boards/${boardId}/tasks`, {
     next: { tags: ["tasks"] },
   });
   if (!res.ok) {
@@ -10,7 +10,7 @@ export async function getBoardTasks(boardId: string) {
 
 // Async function to create a board
 export async function getBoard(boardId: string) {
-  const res = await fetch(`http://backend:3030/boards/${boardId}`, {
+  const res = await fetch(`http://backend:8000/api/boards/${boardId}`, {
     next: { tags: ["board"] },
   });
   if (!res.ok) {
@@ -26,7 +26,7 @@ export async function updateBoard(board: {
   boardId: string;
 }) {
   try {
-    const res = await fetch(`http://backend:3030/boards/${board.boardId}`, {
+    const res = await fetch(`http://backend:8000/api/boards/${board.boardId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export async function updateBoard(board: {
 
 // Async function to create a board
 export async function createBoard() {
-  const res = await fetch("http://backend:3030/boards", {
+  const res = await fetch("http://backend:8000/api/boards", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -67,7 +67,7 @@ export async function createBoard() {
 }
 
 export async function createNewTask(boardId: string) {
-  const res = await fetch("http://backend:3030/tasks", {
+  const res = await fetch("http://backend:8000/api/tasks", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

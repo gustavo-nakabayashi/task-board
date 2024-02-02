@@ -16,5 +16,5 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /api
 
 FROM scratch
 COPY --from=build /api /api
-EXPOSE 3030
+EXPOSE 8000
 CMD [ "/api" ]

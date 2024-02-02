@@ -24,8 +24,15 @@ services:
     build:
       context: ./api/
       dockerfile: Dockerfile
+    develop:
+      watch:
+        - action: rebuild
+          files:
+            - ./**/*.go
+            - ./go.mod
+            - ./go.sum
     ports:
-      - "3030:3030"
+      - "8000:8000"
     restart: unless-stopped
     depends_on: 
       - db
@@ -34,6 +41,18 @@ services:
       - .env
     networks:
       - my_network
+
+  nginx:
+    image: nginx
+    volumes:
+     - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+     - "80:80"
+    networks:
+      - my_network
+    depends_on:
+      - backend
+      - next-app
 
   migrations:
     restart: on-failure
