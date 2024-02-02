@@ -33,8 +33,6 @@ services:
      - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
      - "80:80"
-    networks:
-      - my_network
     depends_on:
       - backend
       - next-app
