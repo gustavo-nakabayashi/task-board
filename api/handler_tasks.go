@@ -14,11 +14,11 @@ import (
 
 func HandleCreateTask(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
-		Name        string    `json:"name"`
-		Description string    `json:"description"`
-		Status      string    `json:"status"`
-		Icon        int32     `json:"icon"`
-		BoardID     uuid.UUID `json:"board_id"`
+		Name        string
+		Description string
+		Status      string
+		Icon        int32
+		BoardID     uuid.UUID
 	}
 
 	params := parameters{}
