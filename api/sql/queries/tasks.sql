@@ -8,7 +8,8 @@ DELETE FROM tasks WHERE id = $1;
 
 -- name: UpdateTask :one
 UPDATE tasks
-SET name=$1, description=$2, icon=$3, status=$4
+SET name=$2, description=$3, icon=$4, status=$5
+WHERE id=$1
 RETURNING *;
 
 -- name: GetTask :one

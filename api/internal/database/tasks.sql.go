@@ -125,11 +125,13 @@ func (q *Queries) GetTasksFromBoard(ctx context.Context, boardID uuid.UUID) ([]T
 
 const updateTask = `-- name: UpdateTask :one
 UPDATE tasks
-SET name=$1, description=$2, icon=$3, status=$4
+SET name=$2, description=$3, icon=$4, status=$5
+WHERE id=$1
 RETURNING id, board_id, created_at, updated_at, name, description, icon, status
 `
 
 type UpdateTaskParams struct {
+	ID          uuid.UUID
 	Name        string
 	Description string
 	Icon        int32
@@ -138,6 +140,7 @@ type UpdateTaskParams struct {
 
 func (q *Queries) UpdateTask(ctx context.Context, arg UpdateTaskParams) (Task, error) {
 	row := q.db.QueryRowContext(ctx, updateTask,
+		arg.ID,
 		arg.Name,
 		arg.Description,
 		arg.Icon,

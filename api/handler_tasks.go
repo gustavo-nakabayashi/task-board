@@ -44,12 +44,12 @@ func HandleCreateTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleDeleteTask(w http.ResponseWriter, r *http.Request) {
-	boardId, err := uuid.Parse(chi.URLParam(r, "id"))
+	taskId, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		ReturnErrorWithMessage(w, http.StatusBadRequest, "ID not valid")
 	}
 
-	if err := DbQueries.DeleteTask(r.Context(), boardId); err != nil {
+	if err := DbQueries.DeleteTask(r.Context(), taskId); err != nil {
 		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Internal error")
 	}
 
@@ -57,15 +57,30 @@ func HandleDeleteTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleUpdateTask(w http.ResponseWriter, r *http.Request) {
-}
-
-func HandleGetTask(w http.ResponseWriter, r *http.Request) {
-	boardId, err := uuid.Parse(chi.URLParam(r, "id"))
+	taskId, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		ReturnErrorWithMessage(w, http.StatusBadRequest, "ID not valid")
 	}
 
-	task, err := DbQueries.GetTask(r.Context(), boardId)
+	var params database.UpdateTaskParams
+	json.NewDecoder(r.Body).Decode(&params)
+	params.ID = taskId
+
+	task, err := DbQueries.UpdateTask(r.Context(), params)
+	if err != nil {
+		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Internal error")
+	}
+
+	json.NewEncoder(w).Encode(task)
+}
+
+func HandleGetTask(w http.ResponseWriter, r *http.Request) {
+	taskId, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		ReturnErrorWithMessage(w, http.StatusBadRequest, "ID not valid")
+	}
+
+	task, err := DbQueries.GetTask(r.Context(), taskId)
 	if err != nil {
 		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Internal error")
 	}
