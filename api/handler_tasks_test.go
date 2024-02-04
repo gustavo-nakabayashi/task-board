@@ -163,6 +163,24 @@ func TestAddTask(t *testing.T) {
 	assert.EqualValues(t, payload, task)
 }
 
+func TestGetTaskDoesntExistReturns404(t *testing.T) {
+	// Act - Create a task
+	getResponse, err := http.Get("http://localhost/api/tasks/" + uuid.New().String())
+	if err != nil {
+		log.Print(err)
+		panic(err)
+	}
+	defer getResponse.Body.Close()
+
+	var taskFound TaskResponse
+	if err := json.NewDecoder(getResponse.Body).Decode(&taskFound); err != nil {
+		log.Fatal("erro", err)
+	}
+
+	// Assert - Find created task
+	assert.Equal(t, http.StatusNotFound, getResponse.StatusCode, "Status code should be 404")
+}
+
 func TestGetTask(t *testing.T) {
 	// Arrange - Create a task
 	taskToAdd := TaskResponse{
@@ -234,3 +252,19 @@ func TestUpdateTask(t *testing.T) {
 	assert.EqualValues(t, updateParams.Icon, updatedTask.Icon, "Task Icon found is not the same as the task added")
 	assert.EqualValues(t, updateParams.Status, updatedTask.Status, "Task Status found is not the same as the task added")
 }
+
+// func TestDeleteTask(t *testing.T) {
+// 	// Arrange - Create a task
+// 	addedTask := createTask()
+//
+// 	// Act - Create a task
+// 	status, err := deleteTask(addedTask.ID)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+//
+// 	// Assert - Find created task
+// 	updatedTask := getTask(addedTask.ID)
+//
+// 	assert.Equal(t, http.StatusOK, status, "Status code should be 200")
+// }

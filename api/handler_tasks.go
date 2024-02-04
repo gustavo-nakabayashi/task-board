@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -81,7 +82,9 @@ func HandleGetTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	task, err := DbQueries.GetTask(r.Context(), taskId)
-	if err != nil {
+	if err == sql.ErrNoRows {
+		ReturnErrorWithMessage(w, http.StatusNotFound, "Not found")
+	} else if err != nil {
 		ReturnErrorWithMessage(w, http.StatusInternalServerError, "Internal error")
 	}
 
