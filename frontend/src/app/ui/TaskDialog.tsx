@@ -2,6 +2,8 @@ import Image from "next/image";
 import clsx from "clsx";
 import Link from "next/link";
 
+import TaskStatus from "./TaskStatus";
+
 const icons = [128187, 128172, 9749, 127947, 128218, 9200];
 
 type TaskType = {
@@ -51,9 +53,21 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
   const IconInput = () => {
     const iconsDivs = icons.map((icon) => {
       return (
-        <label className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg bg-[#E3E8EF] text-xl has-[:checked]:bg-[#F5D565]">
-          {String.fromCodePoint(icon)}
-        </label>
+        <div>
+          <input
+            type="radio"
+            name="icon"
+            className="peer hidden"
+            id={String(icon)}
+            value={icon}
+          />
+          <label
+            htmlFor={String(icon)}
+            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg bg-[#E3E8EF] text-xl peer-checked:bg-[#F5D565]"
+          >
+            {String.fromCodePoint(icon)}
+          </label>
+        </div>
       );
     });
 
@@ -68,22 +82,28 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
   };
 
   const StatusInput = () => {
-    const statuses = ["progress", "wont_do", "completed"];
+    const statuses = [
+      { label: "progress", text: "In Progress" },
+      { label: "wont_do", text: "Won't Do" },
+      { label: "completed", text: "Completed" },
+    ];
     return (
       <div className="flex flex-col">
         <label className="mb-1 text-xs text-[#97A3B6]" htmlFor="Status">
           Status
         </label>
 
-        <div class="grid grid-cols-2">
+        <div className="grid grid-cols-2 gap-4">
           {statuses.map((status) => {
             return (
-              <label class=".. has-[:checked]:bg-indigo-50 has-[:checked]:text-indigo-900 has-[:checked]:ring-indigo-200">
-                {status}
+              <label className="flex cursor-pointer items-center gap-4 rounded-xl p-0.5 outline outline-[#E3E8EF] has-[:checked]:outline-[#3662E3]">
+                <TaskStatus status={status.label} />
+                {status.text}
                 <input
                   type="radio"
                   name="status"
-                  class="checked:border-indigo-500"
+                  value={status.label}
+                  className="ml-auto mr-4 checked:border-indigo-500"
                 />
               </label>
             );
@@ -100,10 +120,10 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
 
   return (
     <dialog
-      className="absolute right-0 top-0 h-screen w-screen bg-black bg-opacity-70 p-4 "
+      className="fixed left-0 top-0 h-screen w-screen bg-black bg-opacity-70 p-4"
       open
     >
-      <div className="max-w-[500px] rounded-xl bg-white p-4 shadow">
+      <div className="ml-auto w-full max-w-[600px] rounded-xl bg-white p-4 shadow">
         <div className="mb-6 flex justify-between text-xl">
           Task details
           <Link
