@@ -25,71 +25,6 @@ type TaskResponse struct {
 
 var board database.Board
 
-func getTask(id uuid.UUID) (database.Task, int) {
-	res, err := http.Get("http://localhost:8000/api/tasks/" + id.String())
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer res.Body.Close()
-
-	var task database.Task
-	if err := json.NewDecoder(res.Body).Decode(&task); err != nil {
-		log.Fatal("erro", err)
-	}
-
-	return task, res.StatusCode
-}
-
-func createTask() database.Task {
-	taskBody := database.CreateTaskParams{
-		BoardID:     board.ID,
-		Name:        "task 1",
-		Description: "description 1",
-		Icon:        1,
-		Status:      "wont_do",
-	}
-
-	taskBodyJson, err := json.Marshal(taskBody)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	res, err := http.Post("http://localhost:8000/api/tasks", "application/json", bytes.NewBuffer(taskBodyJson))
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer res.Body.Close()
-
-	var task database.Task
-	if err := json.NewDecoder(res.Body).Decode(&task); err != nil {
-		log.Fatal("erro", err)
-	}
-
-	return task
-}
-
-func updateTask(task database.UpdateTaskParams) (statusCode int, err error) {
-	taskJson, err := json.Marshal(task)
-	if err != nil {
-		return 0, err
-	}
-
-	req, err := http.NewRequest(http.MethodPut, "http://localhost/api/tasks/"+task.ID.String(), bytes.NewBuffer(taskJson))
-	req.Header.Set("Content-Type", "application/json")
-	if err != nil {
-		return 0, err
-	}
-
-	client := &http.Client{}
-	getResponse, err := client.Do(req)
-	if err != nil {
-		return 0, err
-	}
-	defer getResponse.Body.Close()
-
-	return getResponse.StatusCode, nil
-}
-
 func TestMain(m *testing.M) {
 	boardBody := database.CreateBoardParams{
 		Name:        "board 1",
@@ -101,7 +36,7 @@ func TestMain(m *testing.M) {
 		log.Fatal(err)
 	}
 
-	res, err := http.Post("http://localhost:8000/api/boards", "application/json", bytes.NewBuffer(boardBodyJson))
+	res, err := http.Post("http://localhost/api/boards", "application/json", bytes.NewBuffer(boardBodyJson))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -113,7 +48,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestPingPong(t *testing.T) {
-	res, err := http.Get("http://localhost:8000/api/ping")
+	res, err := http.Get("http://localhost/api/ping")
 	if err != nil {
 		panic(err)
 	}
@@ -280,4 +215,69 @@ func TestDeleteTask(t *testing.T) {
 
 	assert.Equal(t, http.StatusNoContent, res.StatusCode, "Status code should be 204")
 	assert.Equal(t, http.StatusNotFound, getStatus, "Status code should be 404")
+}
+
+func getTask(id uuid.UUID) (database.Task, int) {
+	res, err := http.Get("http://localhost/api/tasks/" + id.String())
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	var task database.Task
+	if err := json.NewDecoder(res.Body).Decode(&task); err != nil {
+		log.Fatal("erro", err)
+	}
+
+	return task, res.StatusCode
+}
+
+func createTask() database.Task {
+	taskBody := database.CreateTaskParams{
+		BoardID:     board.ID,
+		Name:        "task 1",
+		Description: "description 1",
+		Icon:        1,
+		Status:      "wont_do",
+	}
+
+	taskBodyJson, err := json.Marshal(taskBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	res, err := http.Post("http://localhost/api/tasks", "application/json", bytes.NewBuffer(taskBodyJson))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	var task database.Task
+	if err := json.NewDecoder(res.Body).Decode(&task); err != nil {
+		log.Fatal("erro", err)
+	}
+
+	return task
+}
+
+func updateTask(task database.UpdateTaskParams) (statusCode int, err error) {
+	taskJson, err := json.Marshal(task)
+	if err != nil {
+		return 0, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, "http://localhost/api/tasks/"+task.ID.String(), bytes.NewBuffer(taskJson))
+	req.Header.Set("Content-Type", "application/json")
+	if err != nil {
+		return 0, err
+	}
+
+	client := &http.Client{}
+	getResponse, err := client.Do(req)
+	if err != nil {
+		return 0, err
+	}
+	defer getResponse.Body.Close()
+
+	return getResponse.StatusCode, nil
 }
