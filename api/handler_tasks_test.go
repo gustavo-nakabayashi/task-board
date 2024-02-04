@@ -25,7 +25,7 @@ type TaskResponse struct {
 
 var board database.Board
 
-func getTask(id uuid.UUID) database.Task {
+func getTask(id uuid.UUID) (database.Task, int) {
 	res, err := http.Get("http://localhost:8000/api/tasks/" + id.String())
 	if err != nil {
 		log.Fatal(err)
@@ -37,7 +37,7 @@ func getTask(id uuid.UUID) database.Task {
 		log.Fatal("erro", err)
 	}
 
-	return task
+	return task, res.StatusCode
 }
 
 func createTask() database.Task {
@@ -244,7 +244,7 @@ func TestUpdateTask(t *testing.T) {
 	}
 
 	// Assert - Find created task
-	updatedTask := getTask(addedTask.ID)
+	updatedTask, _ := getTask(addedTask.ID)
 
 	assert.Equal(t, http.StatusOK, status, "Status code should be 200")
 	assert.EqualValues(t, updateParams.Name, updatedTask.Name, "Task Name found is not the same as the task added")
@@ -253,18 +253,31 @@ func TestUpdateTask(t *testing.T) {
 	assert.EqualValues(t, updateParams.Status, updatedTask.Status, "Task Status found is not the same as the task added")
 }
 
-// func TestDeleteTask(t *testing.T) {
-// 	// Arrange - Create a task
-// 	addedTask := createTask()
-//
-// 	// Act - Create a task
-// 	status, err := deleteTask(addedTask.ID)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-//
-// 	// Assert - Find created task
-// 	updatedTask := getTask(addedTask.ID)
-//
-// 	assert.Equal(t, http.StatusOK, status, "Status code should be 200")
-// }
+func TestDeleteTask(t *testing.T) {
+	// Arrange - Create a task
+	addedTask := createTask()
+
+	// Act - Delete a task
+	client := &http.Client{}
+
+	req, err := http.NewRequest(http.MethodDelete, "http://localhost/api/tasks/"+addedTask.ID.String(), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	res, err := client.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Assert - Find created task
+	_, getStatus := getTask(addedTask.ID)
+
+	assert.Equal(t, http.StatusNoContent, res.StatusCode, "Status code should be 204")
+	assert.Equal(t, http.StatusNotFound, getStatus, "Status code should be 404")
+}
