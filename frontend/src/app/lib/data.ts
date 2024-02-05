@@ -73,11 +73,11 @@ export async function createNewTask(boardId: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      board_id: boardId,
-      name: "Task To Do",
-      description: "Work on a Challenge on devChallenges.io, learn TypeScript.",
-      status: "",
-      icon: 128218,
+      BoardID: boardId,
+      Name: "Task To Do",
+      Description: "Work on a Challenge on devChallenges.io, learn TypeScript.",
+      Status: "",
+      Icon: 128218,
     }),
   });
 
@@ -86,4 +86,55 @@ export async function createNewTask(boardId: string) {
   }
 
   return res.json();
+}
+
+export async function updateTask({
+  Name,
+  Description,
+  TaskId,
+  Status,
+  Icon,
+}: {
+  Name: string;
+  Description: string;
+  TaskId: string;
+  Status: string;
+  Icon: number;
+}) {
+  try {
+    const res = await fetch(`http://backend:8000/api/tasks/${TaskId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        Name,
+        Description,
+        Status,
+        Icon,
+      }),
+    });
+
+    return res.json();
+  } catch (error) {
+    // print status code
+    if (error instanceof Response) console.log(error.status);
+
+    console.log(error);
+    throw new Error("Failed to update Task");
+  }
+}
+
+export async function deleteTask({ TaskId }: { TaskId: string }) {
+  try {
+    const res = await fetch(`http://backend:8000/api/tasks/${TaskId}`, {
+      method: "DELETE",
+    });
+  } catch (error) {
+    // print status code
+    if (error instanceof Response) console.log(error.status);
+
+    console.log(error);
+    throw new Error("Failed to delete Task");
+  }
 }

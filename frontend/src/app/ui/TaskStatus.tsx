@@ -26,7 +26,7 @@ const TaskStatus = ({ status }: { status: string }) => {
 
   return (
     <span
-      className={`h-10 ${getIconBackgroundColor(status)} flex w-10 items-center justify-center rounded-xl`}
+      className={`h-10 ${getIconBackgroundColor(status)} flex shrink-0 w-10 items-center justify-center rounded-xl`}
     >
       <GetIcon status={status} />
     </span>

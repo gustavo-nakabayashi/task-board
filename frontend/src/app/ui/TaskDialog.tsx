@@ -2,6 +2,8 @@ import Image from "next/image";
 import clsx from "clsx";
 import Link from "next/link";
 
+import { UpdateTask, DeleteTask } from "@/app/action";
+
 import TaskStatus from "./TaskStatus";
 
 const icons = [128187, 128172, 9749, 127947, 128218, 9200];
@@ -56,9 +58,10 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
         <div>
           <input
             type="radio"
-            name="icon"
+            name="Icon"
             className="peer hidden"
             id={String(icon)}
+            defaultChecked={task.Icon === icon}
             value={icon}
           />
           <label
@@ -101,8 +104,9 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
                 {status.text}
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value={status.label}
+                  defaultChecked={task.Status === status.label}
                   className="ml-auto mr-4 checked:border-indigo-500"
                 />
               </label>
@@ -127,7 +131,7 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
         <div className="mb-6 flex justify-between text-xl">
           Task details
           <Link
-            href={"/"}
+            href={"/" + task.BoardID}
             className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-gray-200"
           >
             <Image
@@ -139,11 +143,43 @@ const TaskDialog = ({ task }: { task: TaskType }) => {
             />
           </Link>
         </div>
-        <form action="" className="flex flex-col gap-8">
+        <form action={UpdateTask} className="flex flex-col gap-8">
+          <input type="hidden" name="ID" value={task.ID} />
+          <input type="hidden" name="BoardID" value={task.BoardID} />
           <NameInput />
           <DescriptionInput />
           <IconInput />
           <StatusInput />
+          <div className="flex justify-end gap-4">
+            <button
+              type="submit"
+              value="Delete"
+              formAction={DeleteTask}
+              className="flex items-center gap-2 rounded-full bg-[#97A3B6] px-6 py-2 font-light text-white"
+            >
+              Delete
+              <Image
+                src="/Trash.svg"
+                alt="delete icon"
+                className=""
+                width={18}
+                height={18}
+              />
+            </button>
+            <button
+              type="submit"
+              className="flex items-center gap-2 rounded-full bg-[#3662E3] px-6 py-2 font-light text-white"
+            >
+              Save
+              <Image
+                src="/Done_round.svg"
+                alt="save icon"
+                className=""
+                width={18}
+                height={18}
+              />
+            </button>
+          </div>
         </form>
       </div>
     </dialog>

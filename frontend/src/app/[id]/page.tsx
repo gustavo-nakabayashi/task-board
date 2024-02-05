@@ -65,20 +65,11 @@ export default async function Page({
     );
   }
 
-  if (!tasks) {
-    return (
-      <>
-        <div>loading</div>
-      </>
-    );
-  }
-
-  const tasksDivs = tasks.map((task: any) => {
-    return <Task task={task} key={task.ID} />;
-  });
-
   const RenderTaskDialog = () => {
     const taskId = searchParams.task;
+    if (tasks === null) {
+      return null;
+    }
     const queryTask = tasks.find((task) => task.ID === taskId);
 
     if (queryTask === undefined) {
@@ -89,7 +80,7 @@ export default async function Page({
   };
 
   return (
-    <main className="m-auto max-w-[640px] p-12">
+    <main className="m-auto max-w-[640px] p-4">
       <div className="mb-8 flex items-start gap-4">
         <Image src="/Logo.svg" alt="board icon" width={48} height={48} />
         <div className="space-y-4">
@@ -98,7 +89,11 @@ export default async function Page({
         </div>
       </div>
 
-      <div className="space-y-4">{tasksDivs}</div>
+      <div className="space-y-4">
+        {tasks
+          ? tasks.map((task: any) => <Task task={task} key={task.ID} />)
+          : null}
+      </div>
       <AddTask boardId={boardId} />
       <RenderTaskDialog />
     </main>

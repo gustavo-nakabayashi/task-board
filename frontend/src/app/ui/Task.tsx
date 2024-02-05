@@ -33,7 +33,7 @@ const Task = ({ task }: { task: TaskProps }) => {
         key={task.ID}
         className="flex items-center gap-6 rounded-2xl text-black"
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-xl">
+        <div className="flex h-12 shrink-0 w-12 items-center justify-center rounded-xl bg-white text-xl">
           {iconChar}
         </div>
         <div>
